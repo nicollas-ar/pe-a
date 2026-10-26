@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#570100">
+<title>Peça Natalina – Luz do Limão</title>
+<link rel="icon" href="{{ url_for('static', filename='logo.jpg') }}">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --vinho:#570100;
+  --vinho-claro:#6e1612;
+  --vinho-escuro:#430000;
+  --creme:#f7ecd4;
+  --suave:#d9bfa0;
+  --limao:#f4c542;
+  --linha:rgba(247,236,212,.18);
+  --serif:"Cormorant Garamond",Georgia,"Times New Roman",serif;
+  --sans:"Figtree",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+}
+*{box-sizing:border-box;margin:0}
+html{-webkit-text-size-adjust:100%}
+body{
+  background:var(--vinho);color:var(--creme);font-family:var(--sans);font-size:17px;line-height:1.55;
+  min-height:100dvh;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+}
+button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
+:focus-visible{outline:3px solid var(--limao);outline-offset:3px;border-radius:6px}
+#app{max-width:640px;margin:0 auto;padding:20px 20px 48px}
+
+/* início */
+.inicio{min-height:calc(100dvh - 68px);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:6px}
+.inicio img{width:min(62vw,260px);height:auto;display:block}
+.inicio h1{font-family:var(--serif);font-weight:700;font-size:clamp(2.1rem,8vw,2.8rem);line-height:1.05;margin-top:6px}
+.inicio p{color:var(--suave);font-size:1rem}
+.cards{display:grid;gap:14px;width:100%;margin-top:26px}
+.card{
+  display:flex;align-items:center;justify-content:center;min-height:104px;border-radius:20px;
+  font-family:var(--serif);font-weight:700;font-size:1.9rem;letter-spacing:.2px;
+  transition:transform .15s ease,background-color .15s ease;
+}
+.card:active{transform:scale(.98)}
+.card.cheio{background:var(--limao);color:var(--vinho-escuro)}
+.card.vazado{border:2px solid var(--limao);color:var(--limao)}
+@media (hover:hover){.card.cheio:hover{background:#ffd45c}.card.vazado:hover{background:rgba(244,197,66,.12)}}
+
+/* barra superior */
+.topo{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px}
+.link{display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 4px;color:var(--limao);font-weight:600}
+.link svg{width:18px;height:18px}
+h2{font-family:var(--serif);font-size:2.1rem;line-height:1.1;font-weight:700}
+.sub{color:var(--suave);margin-top:2px}
+
+/* listas */
+.lista{display:grid;gap:10px;margin-top:20px}
+.item{
+  display:flex;flex-direction:column;align-items:flex-start;text-align:left;width:100%;
+  padding:14px 18px;border-radius:14px;background:var(--vinho-claro);min-height:64px;justify-content:center;
+}
+.item b{font-family:var(--serif);font-size:1.45rem;font-weight:700;line-height:1.2}
+.item span{color:var(--suave);font-size:.95rem}
+@media (hover:hover){.item:hover{background:#7d1b16}}
+
+/* chips de cena */
+.chips{display:flex;gap:8px;overflow-x:auto;padding:4px 0 14px;margin:0 -20px;padding-inline:20px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;min-width:44px;height:44px;padding:0 14px;border-radius:22px;border:1px solid var(--linha);font-weight:600}
+.chip[aria-current="true"]{background:var(--limao);color:var(--vinho-escuro);border-color:var(--limao)}
+
+/* roteiro */
+.roteiro{margin-top:8px;display:grid;gap:22px}
+.fala .nome{font-family:var(--serif);font-weight:700;font-size:1.35rem;color:var(--limao);line-height:1.2}
+.fala .emo{color:var(--suave);font-style:italic;font-size:.92rem;margin-left:8px;font-family:var(--sans);font-weight:400}
+.fala .txt{margin-top:2px;white-space:pre-line;font-size:1.08rem}
+.rub{color:var(--suave);font-style:italic;font-size:.97rem;padding-left:14px;border-left:2px solid var(--linha)}
+.rodape{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:34px}
+
+/* botões */
+.btn{
+  display:flex;align-items:center;justify-content:center;min-height:56px;padding:0 18px;border-radius:14px;
+  font-weight:600;font-size:1.05rem;border:2px solid var(--limao);color:var(--limao);text-align:center;
+}
+.btn.cheio{background:var(--limao);color:var(--vinho-escuro)}
+.btn[disabled]{opacity:.35;cursor:default}
+.btn.largo{grid-column:1/-1}
+
+/* treino */
+.progresso{height:4px;border-radius:2px;background:var(--linha);overflow:hidden;margin:6px 0 4px}
+.progresso i{display:block;height:100%;background:var(--limao);transition:width .2s ease}
+.contagem{color:var(--suave);font-size:.92rem}
+.bloco{margin-top:22px;padding:18px;border-radius:16px;background:var(--vinho-claro)}
+.bloco.alvo{background:var(--vinho-escuro);border:1px solid var(--limao)}
+.etiqueta{color:var(--suave);font-size:.9rem;margin-bottom:6px}
+.bloco .rub{margin-top:12px}
+.oculta .txt{filter:blur(9px);user-select:none;-webkit-user-select:none;pointer-events:none}
+.txt{transition:filter .2s ease}
+.revelar{margin-top:14px}
+.fim{text-align:center;padding:40px 0}
+
+@media (min-width:700px){
+  body{font-size:18px}
+  #app{padding-top:36px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<main id="app"></main>
+
+<script>
+const ROTEIRO = {{ roteiro|tojson }};
+const LOGO = "{{ url_for('static', filename='logo.jpg') }}";
+const app = document.getElementById('app');
+const SETA = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>';
+
+function h(tag, cls, text, attrs){
+  const e = document.createElement(tag);
+  if (cls) e.className = cls;
+  if (text != null) e.textContent = text;
+  if (attrs) for (const k in attrs) e.setAttribute(k, attrs[k]);
+  return e;
+}
+function btn(cls, text, fn, attrs){
+  const b = h('button', cls, text, attrs);
+  b.type = 'button';
+  b.addEventListener('click', fn);
+  return b;
+}
+function ir(hash){ location.hash = hash; }
+function cena(id){ return ROTEIRO.find(c => c.id === Number(id)); }
+function linkVoltar(texto, hash){
+  const b = btn('link', null, () => ir(hash));
+  b.innerHTML = SETA; b.append(texto);
+  return b;
+}
+function falaEl(f){
+  const d = h('div', 'fala');
+  const n = h('div', 'nome', f.nome);
+  if (f.emo) n.append(h('span', 'emo', f.emo));
+  d.append(n, h('div', 'txt', f.txt));
+  return d;
+}
+
+/* ---------- telas ---------- */
+function telaInicio(){
+  const s = h('section', 'inicio');
+  const img = h('img', null, null, {src: LOGO, alt: 'Luz do Limão em Cristo'});
+  s.append(img, h('h1', null, 'Peça Natalina'), h('p', null, 'Santo Antônio do Limão'), h('p', null, 'Luz do Limão 2026'));
+  const c = h('div', 'cards');
+  c.append(btn('card cheio', 'Ver Cenas', () => ir('#/ver')), btn('card vazado', 'Treinar Cenas', () => ir('#/treinar')));
+  s.append(c);
+  return s;
+}
+
+function telaLista(modo){
+  const s = h('section');
+  const t = h('div', 'topo');
+  t.append(linkVoltar('Início', '#/'));
+  s.append(t, h('h2', null, modo === 'ver' ? 'Qual cena?' : 'Qual cena você quer treinar?'));
+  const l = h('div', 'lista');
+  ROTEIRO.forEach(c => {
+    const b = btn('item', null, () => ir('#/' + modo + '/' + c.id));
+    b.append(h('b', null, c.titulo), h('span', null, c.sub));
+    l.append(b);
+  });
+  s.append(l);
+  return s;
+}
+
+function telaVer(id){
+  const c = cena(id);
+  if (!c) return telaInicio();
+  const s = h('section');
+  const t = h('div', 'topo');
+  t.append(linkVoltar('Cenas', '#/ver'), btn('link', 'Início', () => ir('#/')));
+  s.append(t);
+  const chips = h('nav', 'chips', null, {'aria-label': 'Cenas'});
+  ROTEIRO.forEach(x => {
+    const b = btn('chip', String(x.id), () => ir('#/ver/' + x.id), {'aria-label': x.titulo});
+    if (x.id === c.id) { b.setAttribute('aria-current', 'true'); }
+    chips.append(b);
+  });
+  s.append(chips, h('h2', null, c.titulo), h('p', 'sub', c.sub));
+  const r = h('div', 'roteiro');
+  c.itens.forEach(i => r.append(i.t === 'f' ? falaEl(i) : h('p', 'rub', i.txt)));
+  s.append(r);
+  const f = h('div', 'rodape');
+  const ant = cena(c.id - 1), prox = cena(c.id + 1);
+  const b1 = btn('btn', 'Cena anterior', () => ir('#/ver/' + (c.id - 1)));
+  const b2 = btn('btn cheio', 'Próxima cena', () => ir('#/ver/' + (c.id + 1)));
+  if (!ant) b1.disabled = true;
+  if (!prox) b2.disabled = true;
+  f.append(b1, b2, btn('btn largo', 'Escolher outra cena', () => ir('#/ver')));
+  s.append(f);
+  return s;
+}
+
+function telaPersonagem(id){
+  const c = cena(id);
+  if (!c) return telaInicio();
+  const s = h('section');
+  const t = h('div', 'topo');
+  t.append(linkVoltar('Cenas', '#/treinar'));
+  s.append(t, h('h2', null, 'Qual personagem você interpreta?'), h('p', 'sub', c.titulo + ' – ' + c.sub));
+  const l = h('div', 'lista');
+  c.personagens.forEach(p => {
+    const n = c.itens.filter(i => i.t === 'f' && i.who.includes(p)).length;
+    const b = btn('item', null, () => ir('#/treinar/' + c.id + '/' + encodeURIComponent(p)));
+    b.append(h('b', null, p), h('span', null, n + (n === 1 ? ' fala' : ' falas')));
+    l.append(b);
+  });
+  s.append(l);
+  return s;
+}
+
+function passos(c, p){
+  const out = [];
+  c.itens.forEach((it, i) => {
+    if (it.t !== 'f' || !it.who.includes(p)) return;
+    let j = i - 1;
+    while (j >= 0 && c.itens[j].t !== 'f') j--;
+    const entre = c.itens.slice(j + 1, i).filter(x => x.t === 'r');
+    out.push({cue: j >= 0 ? c.itens[j] : null, entre, fala: it});
+  });
+  return out;
+}
+
+let treino = {chave: '', i: 0, revelada: false};
+
+function telaTreino(id, p){
+  const c = cena(id);
+  if (!c || !c.personagens.includes(p)) return telaInicio();
+  const ps = passos(c, p);
+  const chave = id + '/' + p;
+  if (treino.chave !== chave) treino = {chave, i: 0, revelada: false};
+  const passo = ps[treino.i];
+
+  const s = h('section');
+  const t = h('div', 'topo');
+  t.append(linkVoltar('Personagens', '#/treinar/' + c.id), btn('link', 'Início', () => ir('#/')));
+  s.append(t, h('h2', null, p), h('p', 'sub', c.titulo + ' – ' + c.sub));
+
+  const pr = h('div', 'progresso'); const bar = h('i'); bar.style.width = ((treino.i + 1) / ps.length * 100) + '%'; pr.append(bar);
+  s.append(h('div', 'contagem', 'Fala ' + (treino.i + 1) + ' de ' + ps.length), pr);
+
+  const deixa = h('div', 'bloco');
+  deixa.append(h('div', 'etiqueta', passo.cue ? 'Antes da sua fala' : 'Início da cena'));
+  if (passo.cue) deixa.append(falaEl(passo.cue));
+  passo.entre.forEach(r => deixa.append(h('p', 'rub', r.txt)));
+  if (!passo.cue && !passo.entre.length) deixa.append(h('p', 'rub', 'A cena começa com a sua fala.'));
+  s.append(deixa);
+
+  const alvo = h('div', 'bloco alvo' + (treino.revelada ? '' : ' oculta'));
+  alvo.append(h('div', 'etiqueta', 'Sua fala'));
+  const fe = falaEl(passo.fala);
+  if (!treino.revelada) fe.querySelector('.txt').setAttribute('aria-hidden', 'true');
+  alvo.append(fe);
+  const rev = btn('btn cheio revelar', treino.revelada ? 'Ocultar Fala' : 'Revelar Fala', () => { treino.revelada = !treino.revelada; desenhar(); });
+  rev.style.width = '100%';
+  alvo.append(rev);
+  s.append(alvo);
+
+  const f = h('div', 'rodape');
+  const ant = btn('btn', 'Fala Anterior', () => { treino.i--; treino.revelada = false; desenhar(); });
+  if (treino.i === 0) ant.disabled = true;
+  const ultimo = treino.i === ps.length - 1;
+  const prox = ultimo
+    ? btn('btn cheio', 'Concluir', () => ir('#/treinar'))
+    : btn('btn cheio', 'Próxima Fala', () => { treino.i++; treino.revelada = false; desenhar(); });
+  f.append(ant, prox);
+  s.append(f);
+  return s;
+}
+
+/* ---------- rotas ---------- */
+function desenhar(){
+  const r = location.hash.replace(/^#\/?/, '').split('/').filter(Boolean).map(decodeURIComponent);
+  let tela;
+  if (r[0] === 'ver') tela = r[1] ? telaVer(r[1]) : telaLista('ver');
+  else if (r[0] === 'treinar') tela = !r[1] ? telaLista('treinar') : (!r[2] ? telaPersonagem(r[1]) : telaTreino(r[1], r[2]));
+  else tela = telaInicio();
+  app.replaceChildren(tela);
+}
+let ultimaRota = null;
+function aoMudar(){
+  const rota = location.hash;
+  desenhar();
+  if (rota !== ultimaRota) window.scrollTo(0, 0);
+  ultimaRota = rota;
+}
+window.addEventListener('hashchange', () => { treino.revelada = false; aoMudar(); });
+aoMudar();
+</script>
+</body>
+</html>
