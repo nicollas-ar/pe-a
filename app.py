@@ -4,6 +4,178 @@ from flask import Flask, jsonify, render_template
 app = Flask(__name__)
 app.json.ensure_ascii = False
 
+# Datas dos ensaios (passados e futuros). Formato: data AAAA-MM-DD e lista "detalhes" (uma linha por horário).
+# Para adicionar um ensaio, inclua um novo item na lista abaixo.
+ENSAIOS = [
+    {
+        "data": "2026-10-31",
+        "detalhes": [
+            "16:00 – Peça: cenas 1, 2, 3 e 4"
+        ]
+    },
+    {
+        "data": "2026-11-01",
+        "detalhes": [
+            "14:00 – Peça: cenas 5, 6 e 7"
+        ]
+    },
+    {
+        "data": "2026-11-08",
+        "detalhes": [
+            "14:00 às 16:00 – Peça: cenas 8, 9 e 10",
+            "16:00 às 18:00 – Coral"
+        ]
+    },
+    {
+        "data": "2026-11-14",
+        "detalhes": [
+            "14:00 – Coral",
+            "16:00 – Peça: cenas 1, 2, 3 e 4"
+        ]
+    },
+    {
+        "data": "2026-11-15",
+        "detalhes": [
+            "14:00 às 16:00 – Coral",
+            "16:00 às 18:00 – Peça: cenas 5, 6 e 7"
+        ]
+    },
+    {
+        "data": "2026-11-22",
+        "detalhes": [
+            "14:00 às 16:00 – Ensaio geral",
+            "16:00 às 18:00 – Coral"
+        ]
+    },
+    {
+        "data": "2026-11-29",
+        "detalhes": [
+            "14:00 às 16:00 – Ensaio geral",
+            "16:00 às 18:00 – Coral"
+        ]
+    },
+    {
+        "data": "2026-12-05",
+        "detalhes": [
+            "13:00 – Ensaio geral da peça e do coral"
+        ]
+    },
+    {
+        "data": "2026-12-06",
+        "detalhes": [
+            "Apresentação"
+        ]
+    }
+]
+
+# Responsáveis por departamento (fotos em static/fotos/)
+RESPONSAVEIS = [
+    {
+        "id": "roteiro",
+        "nome": "Roteiro",
+        "pessoas": [
+            {
+                "nome": "Felipe",
+                "foto": "felipe.jpg"
+            },
+            {
+                "nome": "Leonardo",
+                "foto": "leonardo.jpg"
+            },
+            {
+                "nome": "Nickizinho",
+                "foto": "nickizinho.jpg"
+            }
+        ]
+    },
+    {
+        "id": "ensaios",
+        "nome": "Ensaios",
+        "pessoas": [
+            {
+                "nome": "Henrique",
+                "foto": "henrique.jpg"
+            },
+            {
+                "nome": "Ruan",
+                "foto": "ruan.jpg"
+            },
+            {
+                "nome": "Vinicius",
+                "foto": "vinicius.jpg"
+            }
+        ]
+    },
+    {
+        "id": "luz-e-som",
+        "nome": "Luz e som",
+        "pessoas": [
+            {
+                "nome": "Eduardo",
+                "foto": "eduardo.jpg"
+            },
+            {
+                "nome": "Julia",
+                "foto": "julia.jpg"
+            },
+            {
+                "nome": "Nicolas Augusto",
+                "foto": "nicolas-augusto.jpg"
+            }
+        ]
+    },
+    {
+        "id": "figurino",
+        "nome": "Figurino",
+        "pessoas": [
+            {
+                "nome": "Dennys",
+                "foto": "dennys.jpg"
+            },
+            {
+                "nome": "Maria Eduarda",
+                "foto": "maria-eduarda.jpg"
+            },
+            {
+                "nome": "Mayara",
+                "foto": "mayara.jpg"
+            }
+        ]
+    },
+    {
+        "id": "pascom",
+        "nome": "Pascom e divulgação",
+        "pessoas": [
+            {
+                "nome": "Leonardo",
+                "foto": "leonardo.jpg"
+            },
+            {
+                "nome": "Luanni",
+                "foto": "luanni.jpg"
+            },
+            {
+                "nome": "Maria Sophia",
+                "foto": "maria-sophia.jpg"
+            }
+        ]
+    },
+    {
+        "id": "coral",
+        "nome": "Coral",
+        "pessoas": [
+            {
+                "nome": "Julia",
+                "foto": "julia.jpg"
+            },
+            {
+                "nome": "Maria Eduarda",
+                "foto": "maria-eduarda.jpg"
+            }
+        ]
+    }
+]
+
 ROTEIRO = [
  {
   "id": 1,
@@ -2062,7 +2234,7 @@ ROTEIRO = [
 
 @app.route("/")
 def index():
-    return render_template("index.html", roteiro=ROTEIRO)
+    return render_template("index.html", roteiro=ROTEIRO, ensaios=ENSAIOS, responsaveis=RESPONSAVEIS)
 
 
 @app.route("/api/roteiro")

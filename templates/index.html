@@ -38,7 +38,7 @@ button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
 .inicio p{color:var(--suave);font-size:1rem}
 .cards{display:grid;gap:14px;width:100%;margin-top:26px}
 .card{
-  display:flex;align-items:center;justify-content:center;min-height:104px;border-radius:20px;
+  display:flex;align-items:center;justify-content:center;min-height:92px;border-radius:20px;
   font-family:var(--serif);font-weight:700;font-size:1.9rem;letter-spacing:.2px;
   transition:transform .15s ease,background-color .15s ease;
 }
@@ -46,6 +46,27 @@ button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
 .card.cheio{background:var(--limao);color:var(--vinho-escuro)}
 .card.vazado{border:2px solid var(--limao);color:var(--limao)}
 @media (hover:hover){.card.cheio:hover{background:#ffd45c}.card.vazado:hover{background:rgba(244,197,66,.12)}}
+
+/* responsáveis */
+.grade{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:18px 14px;margin-top:22px}
+.pessoa{text-align:center}
+.pessoa img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:20px;display:block;background:var(--vinho-escuro)}
+.pessoa b{display:block;margin-top:8px;font-family:var(--serif);font-size:1.3rem;line-height:1.2}
+/* ensaios */
+.resumo{color:var(--suave);margin-top:2px}
+.datas{display:grid;gap:10px;margin-top:20px}
+.data{display:flex;align-items:center;gap:14px;padding:14px 16px;border-radius:14px;background:var(--vinho-claro);min-height:68px}
+.data .marca{flex:none;width:30px;height:30px;border-radius:50%;border:2px solid var(--suave);display:grid;place-items:center}
+.data .marca svg{width:18px;height:18px;display:none}
+.data.feito{background:transparent;border:1px solid var(--linha)}
+.data.feito .marca{background:var(--limao);border-color:var(--limao);color:var(--vinho-escuro)}
+.data.feito .marca svg{display:block}
+.data.feito .dia{color:var(--suave)}
+.data.hoje{border:2px solid var(--limao)}
+.data.hoje .marca{border-color:var(--limao)}
+.data .dia{font-family:var(--serif);font-weight:700;font-size:1.35rem;line-height:1.2;text-transform:capitalize}
+.data .detalhe{color:var(--suave);font-size:.93rem}
+.data .tag{margin-left:auto;flex:none;font-size:.85rem;font-weight:600;color:var(--limao)}
 
 /* barra superior */
 .topo{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px}
@@ -112,6 +133,9 @@ h2{font-family:var(--serif);font-size:2.1rem;line-height:1.1;font-weight:700}
 
 <script>
 const ROTEIRO = {{ roteiro|tojson }};
+const ENSAIOS = {{ ensaios|tojson }};
+const RESPONSAVEIS = {{ responsaveis|tojson }};
+const FOTOS = "{{ url_for('static', filename='fotos/') }}";
 const LOGO = "{{ url_for('static', filename='logo.jpg') }}";
 const app = document.getElementById('app');
 const SETA = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>';
@@ -150,7 +174,7 @@ function telaInicio(){
   const img = h('img', null, null, {src: LOGO, alt: 'Luz do Limão em Cristo'});
   s.append(img, h('h1', null, 'Peça Natalina'), h('p', null, 'Santo Antônio do Limão'), h('p', null, 'Luz do Limão 2026'));
   const c = h('div', 'cards');
-  c.append(btn('card cheio', 'Ver Cenas', () => ir('#/ver')), btn('card vazado', 'Treinar Cenas', () => ir('#/treinar')));
+  c.append(btn('card cheio', 'Ver Cenas', () => ir('#/ver')), btn('card vazado', 'Treinar Cenas', () => ir('#/treinar')), btn('card vazado', 'Ensaios', () => ir('#/ensaios')), btn('card vazado', 'Responsáveis', () => ir('#/responsaveis')));
   s.append(c);
   return s;
 }
@@ -275,12 +299,92 @@ function telaTreino(id, p){
   return s;
 }
 
+function hojeISO(){
+  const d = new Date();
+  return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+}
+function telaEnsaios(){
+  const s = h('section');
+  const t = h('div', 'topo');
+  t.append(linkVoltar('Início', '#/'));
+  const hoje = hojeISO();
+  const lista = ENSAIOS.slice().sort((a, b) => (a.data + (a.hora || '')).localeCompare(b.data + (b.hora || '')));
+  const feitos = lista.filter(e => e.data < hoje).length;
+  s.append(t, h('h2', null, 'Ensaios'));
+  if (!lista.length){ s.append(h('p', 'resumo', 'Nenhum ensaio marcado.')); return s; }
+  s.append(h('p', 'resumo', feitos + ' de ' + lista.length + (lista.length === 1 ? ' realizado' : ' realizados')));
+  const proximo = lista.find(e => e.data >= hoje);
+  const l = h('div', 'datas');
+  lista.forEach(e => {
+    const [y, m, d] = e.data.split('-').map(Number);
+    const dt = new Date(y, m - 1, d);
+    const opc = {weekday: 'long', day: 'numeric', month: 'long'};
+    if (y !== new Date().getFullYear()) opc.year = 'numeric';
+    const passado = e.data < hoje, ehHoje = e.data === hoje;
+    const r = h('div', 'data' + (passado ? ' feito' : '') + (ehHoje ? ' hoje' : ''));
+    const marca = h('span', 'marca', null, {'aria-hidden': 'true'});
+    marca.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
+    const txt = h('div');
+    txt.append(h('div', 'dia', dt.toLocaleDateString('pt-BR', opc)));
+    const det = [e.hora, e.local].filter(Boolean).join(' – ');
+    if (det) txt.append(h('div', 'detalhe', det));
+    (e.detalhes || []).forEach(x => txt.append(h('div', 'detalhe', x)));
+    r.append(marca, txt);
+    if (passado) r.append(h('span', 'tag', 'Realizado'));
+    else if (ehHoje) r.append(h('span', 'tag', 'Hoje'));
+    else if (e === proximo) r.append(h('span', 'tag', 'Próximo'));
+    l.append(r);
+  });
+  s.append(l);
+  return s;
+}
+
+function telaDeptos(){
+  const s = h('section');
+  const t = h('div', 'topo');
+  t.append(linkVoltar('Início', '#/'));
+  s.append(t, h('h2', null, 'Responsáveis'));
+  const l = h('div', 'lista');
+  RESPONSAVEIS.forEach(d => {
+    const b = btn('item', null, () => ir('#/responsaveis/' + d.id));
+    b.append(h('b', null, d.nome));
+    l.append(b);
+  });
+  s.append(l);
+  return s;
+}
+function telaDepto(id){
+  const d = RESPONSAVEIS.find(x => x.id === id);
+  if (!d) return telaDeptos();
+  const s = h('section');
+  const t = h('div', 'topo');
+  t.append(linkVoltar('Departamentos', '#/responsaveis'), btn('link', 'Início', () => ir('#/')));
+  s.append(t);
+  const chips = h('nav', 'chips', null, {'aria-label': 'Departamentos'});
+  RESPONSAVEIS.forEach(x => {
+    const b = btn('chip', x.nome, () => ir('#/responsaveis/' + x.id));
+    if (x.id === d.id) b.setAttribute('aria-current', 'true');
+    chips.append(b);
+  });
+  s.append(chips, h('h2', null, d.nome));
+  const g = h('div', 'grade');
+  d.pessoas.forEach(p => {
+    const c = h('div', 'pessoa');
+    c.append(h('img', null, null, {src: FOTOS + p.foto, alt: p.nome, loading: 'lazy'}), h('b', null, p.nome));
+    g.append(c);
+  });
+  s.append(g);
+  return s;
+}
+
 /* ---------- rotas ---------- */
 function desenhar(){
   const r = location.hash.replace(/^#\/?/, '').split('/').filter(Boolean).map(decodeURIComponent);
   let tela;
   if (r[0] === 'ver') tela = r[1] ? telaVer(r[1]) : telaLista('ver');
   else if (r[0] === 'treinar') tela = !r[1] ? telaLista('treinar') : (!r[2] ? telaPersonagem(r[1]) : telaTreino(r[1], r[2]));
+  else if (r[0] === 'ensaios') tela = telaEnsaios();
+  else if (r[0] === 'responsaveis') tela = r[1] ? telaDepto(r[1]) : telaDeptos();
   else tela = telaInicio();
   app.replaceChildren(tela);
 }
