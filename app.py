@@ -83,7 +83,7 @@ RESPONSAVEIS = [
                 "foto": "leonardo.jpg"
             },
             {
-                "nome": "Nickizinho",
+                "nome": "Nicolas",
                 "foto": "nickizinho.jpg"
             }
         ]
@@ -119,7 +119,7 @@ RESPONSAVEIS = [
                 "foto": "julia.jpg"
             },
             {
-                "nome": "Nicolas Augusto",
+                "nome": "Nicollas Augusto",
                 "foto": "nicolas-augusto.jpg"
             }
         ]
