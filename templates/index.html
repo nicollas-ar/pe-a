@@ -48,6 +48,7 @@ button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
 @media (hover:hover){.card.cheio:hover{background:#ffd45c}.card.vazado:hover{background:rgba(244,197,66,.12)}}
 
 /* letra */
+.player{display:block;width:100%;margin-top:16px;color-scheme:dark}
 .letra{margin-top:22px;display:grid;gap:26px;text-align:center}
 .estrofe p{font-family:var(--serif);font-weight:600;line-height:1.5}
 .estrofe .eco{color:var(--limao);font-style:italic}
@@ -143,6 +144,7 @@ const ENSAIOS = {{ ensaios|tojson }};
 const RESPONSAVEIS = {{ responsaveis|tojson }};
 const FOTOS = "{{ url_for('static', filename='fotos/') }}";
 const LETRA = {{ letra|tojson }};
+const AUDIO = "{{ url_for('static', filename='audio/canto-dos-sinos.mp3') }}";
 const LOGO = "{{ url_for('static', filename='logo.jpg') }}";
 const app = document.getElementById('app');
 const SETA = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>';
@@ -385,15 +387,20 @@ function telaDepto(id){
 }
 
 let tamLetra = 1.35;
+function ajustaLetra(d){
+  tamLetra = Math.min(2.2, Math.max(1, tamLetra + d));
+  document.querySelectorAll('.letra p').forEach(p => { p.style.fontSize = tamLetra + 'rem'; });
+}
 function telaLetra(){
   const s = h('section');
   const t = h('div', 'topo');
   t.append(linkVoltar('Início', '#/'));
   const tam = h('div', 'tam');
-  tam.append(btn('chip', 'A−', () => { tamLetra = Math.max(1, tamLetra - .15); desenhar(); }, {'aria-label': 'Diminuir letra'}),
-             btn('chip', 'A+', () => { tamLetra = Math.min(2.2, tamLetra + .15); desenhar(); }, {'aria-label': 'Aumentar letra'}));
+  tam.append(btn('chip', 'A−', () => ajustaLetra(-.15), {'aria-label': 'Diminuir letra'}),
+             btn('chip', 'A+', () => ajustaLetra(.15), {'aria-label': 'Aumentar letra'}));
   t.append(tam);
   s.append(t, h('h2', null, 'Letra do Coral'));
+  s.append(h('audio', 'player', null, {controls: '', preload: 'metadata', src: AUDIO}));
   const w = h('div', 'letra');
   LETRA.forEach(est => {
     const d = h('div', 'estrofe');
