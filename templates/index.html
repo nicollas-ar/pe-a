@@ -38,7 +38,7 @@ button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
 .inicio p{color:var(--suave);font-size:1rem}
 .cards{display:grid;gap:14px;width:100%;margin-top:26px}
 .card{
-  display:flex;align-items:center;justify-content:center;min-height:92px;border-radius:20px;
+  display:flex;align-items:center;justify-content:center;min-height:80px;border-radius:20px;
   font-family:var(--serif);font-weight:700;font-size:1.9rem;letter-spacing:.2px;
   transition:transform .15s ease,background-color .15s ease;
 }
@@ -47,6 +47,12 @@ button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
 .card.vazado{border:2px solid var(--limao);color:var(--limao)}
 @media (hover:hover){.card.cheio:hover{background:#ffd45c}.card.vazado:hover{background:rgba(244,197,66,.12)}}
 
+/* letra */
+.letra{margin-top:22px;display:grid;gap:26px;text-align:center}
+.estrofe p{font-family:var(--serif);font-weight:600;line-height:1.5}
+.estrofe .eco{color:var(--limao);font-style:italic}
+.tam{display:flex;gap:8px}
+.tam .chip{min-width:48px;font-size:1.05rem}
 /* responsáveis */
 .grade{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:18px 14px;margin-top:22px}
 .pessoa{text-align:center}
@@ -136,6 +142,7 @@ const ROTEIRO = {{ roteiro|tojson }};
 const ENSAIOS = {{ ensaios|tojson }};
 const RESPONSAVEIS = {{ responsaveis|tojson }};
 const FOTOS = "{{ url_for('static', filename='fotos/') }}";
+const LETRA = {{ letra|tojson }};
 const LOGO = "{{ url_for('static', filename='logo.jpg') }}";
 const app = document.getElementById('app');
 const SETA = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>';
@@ -174,7 +181,7 @@ function telaInicio(){
   const img = h('img', null, null, {src: LOGO, alt: 'Luz do Limão em Cristo'});
   s.append(img, h('h1', null, 'Peça Natalina'), h('p', null, 'Santo Antônio do Limão'), h('p', null, 'Luz do Limão 2026'));
   const c = h('div', 'cards');
-  c.append(btn('card cheio', 'Ver Cenas', () => ir('#/ver')), btn('card vazado', 'Treinar Cenas', () => ir('#/treinar')), btn('card vazado', 'Ensaios', () => ir('#/ensaios')), btn('card vazado', 'Responsáveis', () => ir('#/responsaveis')));
+  c.append(btn('card cheio', 'Ver Cenas', () => ir('#/ver')), btn('card vazado', 'Treinar Cenas', () => ir('#/treinar')), btn('card vazado', 'Ensaios', () => ir('#/ensaios')), btn('card vazado', 'Responsáveis', () => ir('#/responsaveis')), btn('card vazado', 'Letra do Coral', () => ir('#/letra')));
   s.append(c);
   return s;
 }
@@ -377,6 +384,34 @@ function telaDepto(id){
   return s;
 }
 
+let tamLetra = 1.35;
+function telaLetra(){
+  const s = h('section');
+  const t = h('div', 'topo');
+  t.append(linkVoltar('Início', '#/'));
+  const tam = h('div', 'tam');
+  tam.append(btn('chip', 'A−', () => { tamLetra = Math.max(1, tamLetra - .15); desenhar(); }, {'aria-label': 'Diminuir letra'}),
+             btn('chip', 'A+', () => { tamLetra = Math.min(2.2, tamLetra + .15); desenhar(); }, {'aria-label': 'Aumentar letra'}));
+  t.append(tam);
+  s.append(t, h('h2', null, 'Letra do Coral'));
+  const w = h('div', 'letra');
+  LETRA.forEach(est => {
+    const d = h('div', 'estrofe');
+    est.forEach(linha => {
+      const p = h('p');
+      p.style.fontSize = tamLetra + 'rem';
+      linha.split(/(\([^)]*\))/).forEach(parte => {
+        if (!parte) return;
+        if (parte[0] === '(') p.append(h('span', 'eco', parte)); else p.append(parte);
+      });
+      d.append(p);
+    });
+    w.append(d);
+  });
+  s.append(w);
+  return s;
+}
+
 /* ---------- rotas ---------- */
 function desenhar(){
   const r = location.hash.replace(/^#\/?/, '').split('/').filter(Boolean).map(decodeURIComponent);
@@ -385,6 +420,7 @@ function desenhar(){
   else if (r[0] === 'treinar') tela = !r[1] ? telaLista('treinar') : (!r[2] ? telaPersonagem(r[1]) : telaTreino(r[1], r[2]));
   else if (r[0] === 'ensaios') tela = telaEnsaios();
   else if (r[0] === 'responsaveis') tela = r[1] ? telaDepto(r[1]) : telaDeptos();
+  else if (r[0] === 'letra') tela = telaLetra();
   else tela = telaInicio();
   app.replaceChildren(tela);
 }

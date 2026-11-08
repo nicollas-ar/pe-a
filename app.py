@@ -83,7 +83,7 @@ RESPONSAVEIS = [
                 "foto": "leonardo.jpg"
             },
             {
-                "nome": "Nicolas",
+                "nome": "Nickizinho",
                 "foto": "nickizinho.jpg"
             }
         ]
@@ -119,7 +119,7 @@ RESPONSAVEIS = [
                 "foto": "julia.jpg"
             },
             {
-                "nome": "Nicollas Augusto",
+                "nome": "Nicolas Augusto",
                 "foto": "nicolas-augusto.jpg"
             }
         ]
@@ -174,6 +174,56 @@ RESPONSAVEIS = [
             }
         ]
     }
+]
+
+# Letra do coral: lista de estrofes, cada estrofe é uma lista de linhas
+LETRA = [
+ [
+  "Louvai a Deus, povos, louvai",
+  "Cristo nasceu, glória a Deus Pai",
+  "Anjos no céu cantam louvor (dim-dom-dim-dom)",
+  "Glória a Jesus, Rei Salvador (dim-dom-dim-dom)",
+  "Novas de amor, perdão e paz (dim-dom-dim-dom)",
+  "Voz triunfal à Terra traz (dim-dom-dim-dom)",
+  "Meu bom Jesus, dim-dom-dim-dom",
+  "Sinos em festa, alegre tom"
+ ],
+ [
+  "Santo Senhor, Cristo Jesus (adoremos)",
+  "Divino amor, bênção e luz (Jesus)",
+  "Vinde, cantemos juntos a nosso Jesus",
+  "Caminho de amor e de luz"
+ ],
+ [
+  "Vamos todos cantar a Belém",
+  "O menino que a Senhora tem",
+  "Dim-dom-dim-dom, Belém, Belém",
+  "Dim-dom-dim-dom, Belém, Belém",
+  "Dom"
+ ],
+ [
+  "Louvai a Deus, povos, louvai",
+  "Cristo nasceu, glória a Deus Pai",
+  "Anjos no céu cantam louvor (dim-dom-dim-dom)",
+  "Glória a Jesus, Rei Salvador (dim-dom-dim-dom)",
+  "Novas de amor, perdão e paz (dim-dom-dim-dom)",
+  "Voz triunfal à Terra traz (dim-dom-dim-dom)",
+  "Meu bom Jesus, dim-dom-dim-dom",
+  "Sinos em festa, alegre tom"
+ ],
+ [
+  "Santo Senhor, Cristo Jesus (adoremos)",
+  "Divino amor, bênção e luz (Jesus)",
+  "Vinde, cantemos juntos a nosso Jesus",
+  "Caminho de amor e de luz"
+ ],
+ [
+  "Vamos todos cantar a Belém",
+  "O menino que a Senhora tem",
+  "Dim-dom-dim-dom, Belém, Belém",
+  "Dim-dom-dim-dom, Belém, Belém",
+  "Dom"
+ ]
 ]
 
 ROTEIRO = [
@@ -2234,7 +2284,7 @@ ROTEIRO = [
 
 @app.route("/")
 def index():
-    return render_template("index.html", roteiro=ROTEIRO, ensaios=ENSAIOS, responsaveis=RESPONSAVEIS)
+    return render_template("index.html", roteiro=ROTEIRO, ensaios=ENSAIOS, responsaveis=RESPONSAVEIS, letra=LETRA)
 
 
 @app.route("/api/roteiro")
